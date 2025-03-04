@@ -41,7 +41,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: zap-report
-          path: .
+          path: report.json
 
       - name: 🔍 Vérifier si des vulnérabilités ont été détectées
         run: |
