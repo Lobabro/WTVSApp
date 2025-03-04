@@ -13,31 +13,31 @@ jobs:
     runs-on: self-hosted  # Utilise ton runner auto-hébergé
 
     steps:
-      - name: 📥 Cloner le repository
+      - name: Cloner le repository
         uses: actions/checkout@v3
 
-      - name: 🐍 Installer Python et dépendances
+      - name: Installer Python et dépendances
         run: |
           python3 -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
 
-      - name: 🛠️ Démarrer l'application Flask
+      - name: Démarrer l'application Flask
         run: |
           python app.py &
           sleep 5  # Laisser le temps à l'application de démarrer
 
-      - name: 🔍 Scanner avec OWASP ZAP (self-hosted)
+      - name: Scanner avec OWASP ZAP (self-hosted)
         run: |
           /opt/zap/zap.sh -cmd -quickurl http://127.0.0.1:5000 -quickprogress -quickout report.json
 
-      - name: 📤 Enregistrer le rapport OWASP ZAP
+      - name: Enregistrer le rapport OWASP ZAP
         uses: actions/upload-artifact@v4
         with:
           name: zap-report
           path: report.json
 
-      - name: 📥 Télécharger le rapport pour analyse
+      - name: Télécharger le rapport pour analyse
         uses: actions/download-artifact@v4
         with:
           name: zap-report
@@ -46,6 +46,6 @@ jobs:
       - name: 🔍 Vérifier si des vulnérabilités ont été détectées
         run: |
           if grep -q "High" report.json; then
-            echo "❌ Des vulnérabilités critiques ont été trouvées. Merge bloqué."
+            echo "Des vulnérabilités critiques ont été trouvées. Merge bloqué."
             exit 1
           fi
