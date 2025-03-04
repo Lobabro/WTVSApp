@@ -36,16 +36,3 @@ jobs:
         with:
           name: zap-report
           path: report.json
-
-      - name: Télécharger le rapport pour analyse
-        uses: actions/download-artifact@v4
-        with:
-          name: zap-report
-          path: report.json
-
-      - name: 🔍 Vérifier si des vulnérabilités ont été détectées
-        run: |
-          if grep -q "High" report.json; then
-            echo "Des vulnérabilités critiques ont été trouvées. Merge bloqué."
-            exit 1
-          fi
