@@ -31,8 +31,21 @@ jobs:
         run: |
           /opt/zap/zap.sh -cmd -quickurl http://127.0.0.1:5000 -quickprogress -quickout report.json
 
-      - name: 📤 Enregistrer le rapport
-        uses: actions/upload-artifact@v3
+      - name: 📤 Enregistrer le rapport OWASP ZAP
+        uses: actions/upload-artifact@v4
         with:
           name: zap-report
           path: report.json
+
+      - name: 📥 Télécharger le rapport pour analyse
+        uses: actions/download-artifact@v4
+        with:
+          name: zap-report
+          path: .
+
+      - name: 🔍 Vérifier si des vulnérabilités ont été détectées
+        run: |
+          if grep -q "High" report.json; then
+            echo "❌ Des vulnérabilités critiques ont été trouvées. Merge bloqué."
+            exit 1
+          fi
